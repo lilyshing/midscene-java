@@ -1,0 +1,28 @@
+package com.midscene.core;
+
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
+import com.midscene.core.agent.AgentTest;
+import com.midscene.core.executor.TaskExecutorTest;
+import com.midscene.core.insight.InsightEngineTest;
+import com.midscene.core.util.CacheUtilTest;
+import com.midscene.core.util.LoggerUtilTest;
+import com.midscene.core.util.ReportGeneratorTest;
+
+/**
+ * MidScene核心模块测试套件
+ * 包含所有核心组件的单元测试
+ */
+@Suite
+@SelectClasses({
+    AgentTest.class,
+    TaskExecutorTest.class,
+    InsightEngineTest.class,
+    CacheUtilTest.class,
+    LoggerUtilTest.class,
+    ReportGeneratorTest.class
+})
+public class CoreTestSuite {
+    // 测试套件类，不需要实现
+}

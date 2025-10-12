@@ -1,0 +1,197 @@
+package com.midscene.core.insight;
+
+import com.midscene.core.model.InsightResult;
+import com.midscene.core.model.InsightType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * InsightEngine类的单元测试
+ */
+class InsightEngineTest {
+
+    @Mock
+    private AIModelService mockAiModelService;
+    
+    private InsightEngine insightEngine;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        
+        // 创建InsightEngine实例
+        insightEngine = new InsightEngine(mockAiModelService);
+    }
+
+    @Test
+    void testConstructor() {
+        // 测试构造函数
+        assertNotNull(insightEngine);
+    }
+
+    @Test
+    void testAnalyzeUIContext() throws Exception {
+        // 准备测试数据
+        String uiContext = "<html><body><button id='submit'>提交</button></body></html>";
+        String expectedAiResponse = "这是一个包含提交按钮的页面";
+        
+        // 模拟依赖行为
+        when(mockAiModelService.analyzeUIContext(uiContext)).thenReturn(expectedAiResponse);
+        
+        // 执行测试
+        String result = insightEngine.analyze(uiContext);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(expectedAiResponse, result);
+        
+        // 验证交互
+        verify(mockAiModelService, times(1)).analyzeUIContext(uiContext);
+    }
+
+    @Test
+    void testGetElementInsight() throws Exception {
+        // 准备测试数据
+        String elementDescription = "一个蓝色的提交按钮";
+        String expectedAiResponse = "这是用于提交表单的按钮";
+        
+        // 模拟依赖行为
+        when(mockAiModelService.getElementInsight(elementDescription)).thenReturn(expectedAiResponse);
+        
+        // 执行测试
+        InsightResult result = insightEngine.getElementInsight(elementDescription);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(InsightType.ELEMENT, result.getType());
+        assertEquals(expectedAiResponse, result.getContent());
+        
+        // 验证交互
+        verify(mockAiModelService, times(1)).getElementInsight(elementDescription);
+    }
+
+    @Test
+    void testGetPageInsight() throws Exception {
+        // 准备测试数据
+        String pageContent = "这是一个登录页面，包含用户名和密码输入框";
+        String expectedAiResponse = "这是一个用户认证页面，用于登录系统";
+        
+        // 模拟依赖行为
+        when(mockAiModelService.getPageInsight(pageContent)).thenReturn(expectedAiResponse);
+        
+        // 执行测试
+        InsightResult result = insightEngine.getPageInsight(pageContent);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(InsightType.PAGE, result.getType());
+        assertEquals(expectedAiResponse, result.getContent());
+        
+        // 验证交互
+        verify(mockAiModelService, times(1)).getPageInsight(pageContent);
+    }
+
+    @Test
+    void testGetWorkflowInsight() throws Exception {
+        // 准备测试数据
+        String workflowDescription = "用户需要填写表单并点击提交按钮";
+        String expectedAiResponse = "这是一个数据提交流程，需要先输入信息再提交";
+        
+        // 模拟依赖行为
+        when(mockAiModelService.getWorkflowInsight(workflowDescription)).thenReturn(expectedAiResponse);
+        
+        // 执行测试
+        InsightResult result = insightEngine.getWorkflowInsight(workflowDescription);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(InsightType.WORKFLOW, result.getType());
+        assertEquals(expectedAiResponse, result.getContent());
+        
+        // 验证交互
+        verify(mockAiModelService, times(1)).getWorkflowInsight(workflowDescription);
+    }
+
+    @Test
+    void testAnalyzeWithException() throws Exception {
+        // 准备测试数据
+        String uiContext = "<html><body><button>提交</button></body></html>";
+        
+        // 模拟依赖行为 - 抛出异常
+        when(mockAiModelService.analyzeUIContext(uiContext)).thenThrow(new RuntimeException("AI服务错误"));
+        
+        // 执行测试
+        String result = insightEngine.analyze(uiContext);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertTrue(result.contains("分析失败"));
+        
+        // 验证交互
+        verify(mockAiModelService, times(1)).analyzeUIContext(uiContext);
+    }
+
+    @Test
+    void testGetElementInsightWithException() throws Exception {
+        // 准备测试数据
+        String elementDescription = "一个蓝色的提交按钮";
+        
+        // 模拟依赖行为 - 抛出异常
+        when(mockAiModelService.getElementInsight(elementDescription)).thenThrow(new RuntimeException("AI服务错误"));
+        
+        // 执行测试
+        InsightResult result = insightEngine.getElementInsight(elementDescription);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(InsightType.ELEMENT, result.getType());
+        assertTrue(result.getContent().contains("分析失败"));
+        
+        // 验证交互
+        verify(mockAiModelService, times(1)).getElementInsight(elementDescription);
+    }
+
+    @Test
+    void testGetPageInsightWithException() throws Exception {
+        // 准备测试数据
+        String pageContent = "这是一个登录页面";
+        
+        // 模拟依赖行为 - 抛出异常
+        when(mockAiModelService.getPageInsight(pageContent)).thenThrow(new RuntimeException("AI服务错误"));
+        
+        // 执行测试
+        InsightResult result = insightEngine.getPageInsight(pageContent);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(InsightType.PAGE, result.getType());
+        assertTrue(result.getContent().contains("分析失败"));
+        
+        // 验证交互
+        verify(mockAiModelService, times(1)).getPageInsight(pageContent);
+    }
+
+    @Test
+    void testGetWorkflowInsightWithException() throws Exception {
+        // 准备测试数据
+        String workflowDescription = "用户需要填写表单";
+        
+        // 模拟依赖行为 - 抛出异常
+        when(mockAiModelService.getWorkflowInsight(workflowDescription)).thenThrow(new RuntimeException("AI服务错误"));
+        
+        // 执行测试
+        InsightResult result = insightEngine.getWorkflowInsight(workflowDescription);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(InsightType.WORKFLOW, result.getType());
+        assertTrue(result.getContent().contains("分析失败"));
+        
+        // 验证交互
+        verify(mockAiModelService, times(1)).getWorkflowInsight(workflowDescription);
+    }
+}
