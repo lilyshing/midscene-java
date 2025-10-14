@@ -293,7 +293,7 @@ mvn test
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-📝 Credits
+## 📝 Credits
 
 Thanks to Midscene Project: https://github.com/web-infra-dev/midscene for inspiration and technical references
 
