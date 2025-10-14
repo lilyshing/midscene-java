@@ -4,66 +4,79 @@
 [![Java Version](https://img.shields.io/badge/Java-17+-green.svg)](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)
 [![Maven Central](https://img.shields.io/badge/Maven%20Central-0.1.1-blue.svg)](https://search.maven.org/artifact/com.midscene/midscene-java-parent)
 
-基于AI的Web和Android自动化框架，支持自然语言驱动的UI操作 - Java版本
+AI-powered automation framework for Web and Android with natural language-driven UI operations - Java version
 
-## 🌟 项目概述
+## 🌐 Language Version
+- [中文版本 (Chinese Version)](README-zh.md)
 
-Midscene Java 是一个革命性的基于 AI 的自动化框架，专为 Web 和 Android 平台的 UI 自动化操作而设计。它是 Midscene Python 的 Java 版本实现，继承了其核心理念：**让自动化变得像说话一样简单**。
+## 🌟 Project Overview
 
-### 🎯 核心特性
+Midscene Java is a revolutionary AI-powered automation framework designed for UI automation operations on Web and Android platforms. It is the Java implementation of Midscene Python, inheriting its core philosophy: **making automation as simple as speaking**. 
 
-- **自然语言操作** - 用日常语言描述操作意图，AI自动理解并执行
-- **智能元素定位** - 多策略融合，自动选择最优的定位方法，适应页面变化
-- **结构化数据提取** - 使用自然语言描述提取复杂结构化数据
-- **智能断言验证** - 用自然语言描述验证条件，AI自动判断
-- **多平台支持** - 统一接口支持Web和Android平台
-- **可视化调试** - 详细的执行截图和决策过程记录
+### 🎯 Core Features
 
-## 🏗️ 项目结构
+- **Natural Language Operations** - Describe operation intentions in everyday language, and AI will automatically understand and execute them
+- **Intelligent Element Locating** - Multi-strategy fusion, automatically selects the optimal positioning method, adapts to page changes
+- **Structured Data Extraction** - Use natural language to extract complex structured data
+- **Intelligent Assertion Verification** - Describe verification conditions in natural language, AI automatically judges
+- **Multi-Platform Support** - Unified interface supports Web and Android platforms
+- **Visual Debugging** - Detailed execution screenshots and decision process recording
+- **Code Optimization and Refactoring** - Systematically refactored for more modular and maintainable code
+
+## 🏗️ Project Structure
 
 ```
 midscene-java/
-├── midscene-core/         # 核心模块，提供Agent和AI引擎
-├── midscene-web/          # Web自动化模块
-│   ├── midscene-web-playwright/   # Playwright实现
-│   └── midscene-web-selenium/     # Selenium实现
-├── midscene-android/      # Android自动化模块
-├── midscene-cli/          # 命令行工具
-├── midscene-examples/     # 示例代码
-├── midscene-tests/        # 测试用例
-└── wiki/                  # 项目文档
+├── packages/
+│   ├── core/               # Core module, providing Agent and AI engine
+│   ├── web/                # Web automation module
+│   │   ├── playwright/     # Playwright implementation
+│   │   └── selenium/       # Selenium implementation
+│   ├── android/            # Android automation module
+│   ├── cli/                # Command line tool
+│   ├── examples/           # Example code
+│   ├── playground/         # Development testing environment
+│   └── tests/              # Test cases
+├── apps/                   # Application examples
+├── docs/                   # Project documentation and optimization plans
+└── wiki/                   # Project wiki documentation
 ```
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 前置要求
+### Prerequisites
 
 - Java 17+
-- Maven 3.6+ 或 Gradle 7.0+
-- 浏览器 (Chrome/Firefox/Edge，用于 Web 自动化)
-- AI 模型 API Key (OpenAI、Claude、Qwen 或 Gemini 任选其一)
+- Maven 3.6+ or Gradle 7.0+
+- Browser (Chrome/Firefox/Edge, for Web automation)
+- AI model API Key (Choose one from OpenAI, Claude, Qwen, or Gemini)
 
-### 安装
+### Installation
 
-在你的 `pom.xml` 文件中添加 Midscene Java 依赖：
+Add Midscene Java dependencies to your `pom.xml` file:
 
 ```xml
 <dependencies>
-    <!-- 核心模块 -->
+    <!-- Core module -->
     <dependency>
         <groupId>com.midscene</groupId>
         <artifactId>midscene-core</artifactId>
         <version>0.1.1</version>
     </dependency>
     
-    <!-- Web 自动化模块 (根据需要选择) -->
+    <!-- Web automation modules (choose as needed) -->
     <dependency>
         <groupId>com.midscene</groupId>
-        <artifactId>midscene-web</artifactId>
+        <artifactId>midscene-web-playwright</artifactId>
+        <version>0.1.1</version>
+    </dependency>
+    <dependency>
+        <groupId>com.midscene</groupId>
+        <artifactId>midscene-web-selenium</artifactId>
         <version>0.1.1</version>
     </dependency>
     
-    <!-- Android 自动化模块 (根据需要选择) -->
+    <!-- Android automation module (choose as needed) -->
     <dependency>
         <groupId>com.midscene</groupId>
         <artifactId>midscene-android</artifactId>
@@ -72,9 +85,9 @@ midscene-java/
 </dependencies>
 ```
 
-### 配置 AI 模型
+### Configure AI Model
 
-创建 `application.properties` 或 `application.yml` 文件配置 AI 模型：
+Create an `application.properties` or `application.yml` file to configure the AI model:
 
 ```properties
 # application.properties
@@ -83,9 +96,9 @@ midscene.ai.model=gpt-4-vision-preview
 midscene.ai.api-key=your_openai_api_key_here
 ```
 
-### 示例代码
+### Example Code
 
-#### Web 自动化示例
+#### Web Automation Example
 
 ```java
 package com.example;
@@ -100,36 +113,36 @@ import com.microsoft.playwright.Page;
 public class SearchExample {
     public static void main(String[] args) {
         try (Playwright playwright = Playwright.create()) {
-            // 创建浏览器实例
+            // Create browser instance
             Browser browser = playwright.chromium().launch();
             Page page = browser.newPage();
             
-            // 创建 PlaywrightPage 包装器
+            // Create PlaywrightPage wrapper
             PlaywrightPage playwrightPage = new PlaywrightPage(page);
             
-            // 创建 Agent
+            // Create Agent
             Agent agent = new Agent(new PlaywrightUIContextProvider(playwrightPage));
             
-            // 导航到网站
+            // Navigate to website
             page.navigate("https://www.baidu.com");
             
-            // 使用自然语言进行搜索
-            agent.aiAction("在搜索框输入'Java 教程'");
-            agent.aiAction("点击搜索按钮");
+            // Use natural language for search
+            agent.aiAction("Type 'Java tutorial' in the search box");
+            agent.aiAction("Click the search button");
             
-            // 验证搜索结果
-            agent.aiAssert("页面显示了 Java 教程的搜索结果");
+            // Verify search results
+            agent.aiAssert("The page displays search results for Java tutorials");
             
-            System.out.println("✅ 搜索操作完成！");
+            System.out.println("✅ Search operation completed!");
             
-            // 关闭浏览器
+            // Close browser
             browser.close();
         }
     }
 }
 ```
 
-#### 数据提取示例
+#### Data Extraction Example
 
 ```java
 package com.example;
@@ -154,22 +167,22 @@ public class ExtractExample {
             PlaywrightPage playwrightPage = new PlaywrightPage(page);
             Agent agent = new Agent(new PlaywrightUIContextProvider(playwrightPage));
             
-            // 访问新闻网站
+            // Visit news website
             page.navigate("https://news.example.com");
             
-            // 提取结构化数据
+            // Extract structured data
             Map<String, Object> schema = new HashMap<>();
             schema.put("articles", List.of(
                 Map.of(
-                    "title", "新闻标题",
-                    "time", "发布时间",
-                    "summary", "新闻摘要"
+                    "title", "News title",
+                    "time", "Publish time",
+                    "summary", "News summary"
                 )
             ));
             
             Map<String, Object> newsData = agent.aiExtract(schema);
             
-            // 输出结果
+            // Output results
             List<Map<String, String>> articles = (List<Map<String, String>>) newsData.get("articles");
             for (Map<String, String> article : articles) {
                 System.out.println("📰 " + article.get("title"));
@@ -183,7 +196,7 @@ public class ExtractExample {
 }
 ```
 
-#### Android 自动化示例
+#### Android Automation Example
 
 ```java
 package com.example;
@@ -196,23 +209,23 @@ import java.util.concurrent.CompletableFuture;
 
 public class AndroidExample {
     public static void main(String[] args) {
-        // 连接 Android 设备
+        // Connect to Android device
         AndroidDevice device = new AndroidDevice();
         CompletableFuture<Void> connectFuture = device.connect();
-        connectFuture.join(); // 等待连接完成
+        connectFuture.join(); // Wait for connection to complete
         
         try {
-            // 创建 Agent
+            // Create Agent
             Agent agent = new Agent(new AndroidUIContextProvider(device));
             
-            // 启动应用
-            agent.aiAction("启动设置应用");
+            // Launch application
+            agent.aiAction("Launch the settings app");
             
-            // 执行操作
-            agent.aiAction("点击Wi-Fi选项");
-            agent.aiAssert("Wi-Fi设置页面已打开");
+            // Perform operations
+            agent.aiAction("Tap on the Wi-Fi option");
+            agent.aiAssert("The Wi-Fi settings page is open");
             
-            System.out.println("✅ Android自动化操作完成！");
+            System.out.println("✅ Android automation operation completed!");
         } finally {
             device.disconnect();
         }
@@ -220,76 +233,76 @@ public class AndroidExample {
 }
 ```
 
-## 📖 文档
+## 📖 Documentation
 
-- [项目概述](wiki/项目概述.md)
-- [安装配置](wiki/安装配置.md)
-- [快速开始](wiki/快速开始.md)
-- [API参考](wiki/api-reference/README.md)
-- [示例代码](wiki/examples/README.md)
-- [常见问题](wiki/常见问题.md)
-- [核心概念](wiki/核心概念/README.md)
-- [平台集成](wiki/平台集成/README.md)
+- [Project Overview](wiki/项目概述.md) - *Chinese only*
+- [Installation and Configuration](wiki/安装配置.md) - *Chinese only*
+- [Quick Start](wiki/快速开始.md) - *Chinese only*
+- [API Reference](wiki/api-reference/README.md)
+- [Example Code](wiki/examples/README.md)
+- [Frequently Asked Questions](wiki/常见问题.md) - *Chinese only*
+- [Core Concepts](wiki/核心概念/README.md) - *Chinese only*
+- [Platform Integration](wiki/平台集成/README.md)
 
-## 🆚 与传统工具的对比
+## 🆚 Comparison with Traditional Tools
 
-| 特性 | 传统自动化工具 | Midscene Java |
-|------|---------------|---------------|
-| **学习曲线** | 陡峭，需要学习复杂 API | 平缓，自然语言驱动 |
-| **代码可读性** | 晦涩难懂 | 直观易懂 |
-| **维护成本** | 高，页面变化需要大量修改 | 低，AI 自动适应变化 |
-| **元素定位** | 手动编写选择器 | AI 智能定位 |
-| **错误处理** | 需要手动处理各种异常 | AI 自动重试和恢复 |
-| **跨平台** | 需要学习不同工具 | 统一接口 |
+| Feature | Traditional Automation Tools | Midscene Java |
+|---------|------------------------------|---------------|
+| **Learning Curve** | Steep, requires learning complex APIs | Gentle, natural language driven |
+| **Code Readability** | Obscure and hard to understand | Intuitive and easy to understand |
+| **Maintenance Cost** | High, requires extensive modifications for page changes | Low, AI automatically adapts to changes |
+| **Element Locating** | Manual selector writing | AI intelligent locating |
+| **Error Handling** | Manual handling of various exceptions | AI automatic retry and recovery |
+| **Cross-Platform** | Requires learning different tools | Unified interface |
+| **Code Quality** | Varies by project | Systematically refactored, modular design |
 
-## 🤝 贡献指南
+## 🤝 Contribution Guidelines
 
-我们欢迎所有形式的贡献！无论是提交bug报告、功能请求、文档改进还是代码贡献。
+We welcome all forms of contributions! Whether it's submitting bug reports, feature requests, documentation improvements, or code contributions.
 
-### 如何贡献
+### How to Contribute
 
-1. Fork 本仓库
-2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交你的更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建一个 Pull Request
+1. Fork this repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Create a Pull Request
 
-### 开发环境设置
+### Development Environment Setup
 
 ```bash
-# 克隆仓库
+# Clone the repository
 git clone https://github.com/Master-Frank/midscene-java.git
 cd midscene-java
 
-# 构建项目
+# Build the project
 mvn clean install
 
-# 运行测试
+# Run tests
 mvn test
 ```
 
-### 代码规范
+### Code Standards
 
-- 遵循 [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
-- 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范
-- 为新功能添加相应的测试用例
-- 为公共API添加JavaDoc文档
+- Follow commit message conventions from [Conventional Commits](https://www.conventionalcommits.org/)
+- Add corresponding test cases for new features
+- Add JavaDoc documentation for public APIs
+- Keep code modular, avoid overly long methods
 
-## 📄 许可证
+## 📄 License
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 致谢
+📝 Credits
 
-- 感谢 [Midscene Python](https://github.com/Python51888/midscene-python) 项目提供的灵感和基础设计
-- 感谢所有贡献者和社区成员的支持
+Thanks to Midscene Project: https://github.com/web-infra-dev/midscene for inspiration and technical references
 
-## 📞 联系我们
+## 📞 Contact Us
 
 - **GitHub**: [Master-Frank/midscene-java](https://github.com/Master-Frank/midscene-java)
-- **问题反馈**: [GitHub Issues](https://github.com/Master-Frank/midscene-java/issues)
-- **讨论**: [GitHub Discussions](https://github.com/Master-Frank/midscene-java/discussions)
+- **Issue Reporting**: [GitHub Issues](https://github.com/Master-Frank/midscene-java/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Master-Frank/midscene-java/discussions)
 
 ---
 
-⭐ 如果这个项目对你有帮助，请给我们一个星标！
+⭐ If this project helps you, please give us a star!
