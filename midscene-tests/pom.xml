@@ -14,13 +14,6 @@
     <description>Tests for Midscene Java</description>
 
     <dependencies>
-        <!-- 核心模块依赖 -->
-        <dependency>
-            <groupId>com.midscene</groupId>
-            <artifactId>midscene-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        
         <!-- JUnit 5 测试框架 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

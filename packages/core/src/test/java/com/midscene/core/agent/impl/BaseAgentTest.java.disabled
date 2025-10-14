@@ -1,0 +1,434 @@
+package com.midscene.core.agent.impl;
+
+import com.midscene.core.agent.Agent;
+import com.midscene.core.cache.AIModelCache;
+import com.midscene.core.cache.UiContextCache;
+import com.midscene.core.model.TaskResult;
+import com.midscene.core.model.TaskStatus;
+import com.midscene.core.service.AIModelService;
+import com.midscene.core.service.InsightEngine;
+import com.midscene.core.service.TaskExecutor;
+import com.midscene.shared.model.ai.*;
+import com.midscene.shared.platform.ElementLocator;
+import com.midscene.shared.platform.PlatformInfo;
+import com.midscene.shared.platform.PlatformInterface;
+import com.midscene.shared.platform.UiContext;
+import com.midscene.shared.platform.UiElement;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+public class BaseAgentTest {
+
+    @Mock
+    private PlatformInterface platform;
+    @Mock
+    private AIModelService aiModelService;
+    @Mock
+    private InsightEngine insightEngine;
+    @Mock
+    private TaskExecutor taskExecutor;
+    @Mock
+    private PlatformInfo platformInfo;
+    @Mock
+    private UiContext uiContext;
+    @Mock
+    private UiElement uiElement;
+    @Mock
+    private AIModelCache aiModelCache;
+    @Mock
+    private UiContextCache uiContextCache;
+
+    private BaseAgent agent;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        
+        // 设置模拟对象的行为
+        when(platform.getPlatformInfo()).thenReturn(platformInfo);
+        when(platformInfo.getType()).thenReturn(PlatformInfo.PlatformType.WEB);
+        when(platform.getCurrentUiContext()).thenReturn(CompletableFuture.completedFuture(uiContext));
+        when(uiElement.getId()).thenReturn("test-element-id");
+        when(uiElement.getType()).thenReturn("BUTTON");
+        when(uiElement.getText()).thenReturn("Test Button");
+        
+        // 创建被测试对象
+        agent = new BaseAgent(platform, aiModelService, insightEngine, taskExecutor);
+    }
+
+    @Test
+    void testConstructor() {
+        // 验证构造函数成功初始化对象
+        assertNotNull(agent);
+        // 验证父类字段被正确初始化
+        assertNotNull(((Agent)agent).getPlatform());
+        assertNotNull(((Agent)agent).getAiModelService());
+        assertNotNull(((Agent)agent).getInsightEngine());
+        assertNotNull(((Agent)agent).getTaskExecutor());
+    }
+
+    @Test
+    void testGetActiveTaskCount_initialState() {
+        // 测试初始状态下活跃任务数量为0
+        assertEquals(0, agent.getActiveTaskCount());
+    }
+
+    @Test
+    void testAiAction_withCacheHit() throws Exception {
+        // 准备测试数据
+        String instruction = "点击登录按钮";
+        AIActionRequest request = AIActionRequest.builder()
+                .task(instruction)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        List<Map<String, Object>> actionPlan = new ArrayList<>();
+        Map<String, Object> action = new HashMap<>();
+        action.put("action", "tap");
+        Map<String, Object> params = new HashMap<>();
+        params.put("elementId", "login-button");
+        action.put("params", params);
+        actionPlan.add(action);
+        
+        AIActionResult cachedResult = AIActionResult.builder()
+                .intent("{\"type\":\"CLICK\",\"target\":\"login-button\"}")
+                .actionPlan(actionPlan)
+                .build();
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(cachedResult);
+        
+        TaskResult expectedResult = TaskResult.builder()
+                .status(TaskStatus.COMPLETED)
+                .message("Task completed successfully")
+                .build();
+        when(taskExecutor.executeTask(eq("tap"), anyMap())).thenReturn(CompletableFuture.completedFuture(expectedResult));
+        
+        // 执行测试
+        CompletableFuture<TaskResult> resultFuture = agent.aiAction(instruction);
+        TaskResult result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(TaskStatus.COMPLETED, result.getStatus());
+        assertTrue(result.getMessage().contains("from cache"));
+        
+        // 验证交互
+        verify(aiModelService).getCachedResult(request);
+    }
+
+    @Test
+    void testAiAction_withCacheMiss() throws Exception {
+        // 准备测试数据
+        String instruction = "点击注册按钮";
+        AIActionRequest request = AIActionRequest.builder()
+                .task(instruction)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        Map<String, Object> intent = new HashMap<>();
+        intent.put("type", "CLICK");
+        intent.put("target", "register-button");
+        
+        List<Map<String, Object>> actionPlan = new ArrayList<>();
+        Map<String, Object> action = new HashMap<>();
+        action.put("action", "tap");
+        Map<String, Object> params = new HashMap<>();
+        params.put("elementId", "register-button");
+        action.put("params", params);
+        actionPlan.add(action);
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(null);
+        when(insightEngine.understandIntent(eq(instruction), anyMap()))
+                .thenReturn(CompletableFuture.completedFuture(intent));
+        when(insightEngine.generateActionPlan(eq(intent), isNull())).thenReturn(CompletableFuture.completedFuture(actionPlan));
+        
+        TaskResult expectedResult = TaskResult.builder()
+                .status(TaskStatus.COMPLETED)
+                .message("Task completed successfully")
+                .build();
+        when(taskExecutor.executeTask(eq("tap"), anyMap())).thenReturn(CompletableFuture.completedFuture(expectedResult));
+        
+        // 执行测试
+        CompletableFuture<TaskResult> resultFuture = agent.aiAction(instruction);
+        TaskResult result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(TaskStatus.COMPLETED, result.getStatus());
+        assertFalse(((Boolean) result.getData().get("fromCache")));
+        
+        // 验证交互
+        verify(aiModelService).cacheResult(any(AIActionRequest.class), any(AIActionResult.class));
+    }
+
+    @Test
+    void testAiTap_withCacheHit() throws Exception {
+        // 准备测试数据
+        String targetDescription = "登录按钮";
+        AITapRequest request = AITapRequest.builder()
+                .task(targetDescription)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        AITapResult cachedResult = AITapResult.builder()
+                .tapTarget(new ElementLocator(ElementLocator.LocatorType.ID, "login-button"))
+                .build();
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(cachedResult);
+        
+        TaskResult expectedResult = TaskResult.builder()
+                .status(TaskStatus.COMPLETED)
+                .message("Tap completed successfully")
+                .build();
+        when(taskExecutor.executeTask(eq("tap"), anyMap())).thenReturn(CompletableFuture.completedFuture(expectedResult));
+        
+        // 执行测试
+        CompletableFuture<TaskResult> resultFuture = agent.aiTap(targetDescription);
+        TaskResult result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(TaskStatus.COMPLETED, result.getStatus());
+        assertTrue(result.getMessage().contains("from cache"));
+    }
+
+    @Test
+    void testAiTap_withCacheMiss() throws Exception {
+        // 准备测试数据
+        String targetDescription = "注册按钮";
+        AITapRequest request = AITapRequest.builder()
+                .task(targetDescription)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        List<UiElement> elements = Collections.singletonList(uiElement);
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(null);
+        when(insightEngine.findElementsByDescription(eq(uiContext), eq(targetDescription)))
+                .thenReturn(CompletableFuture.completedFuture(elements));
+        
+        TaskResult expectedResult = TaskResult.builder()
+                .status(TaskStatus.COMPLETED)
+                .message("Tap completed successfully")
+                .build();
+        when(taskExecutor.executeTask(eq("tap"), anyMap())).thenReturn(CompletableFuture.completedFuture(expectedResult));
+        
+        // 执行测试
+        CompletableFuture<TaskResult> resultFuture = agent.aiTap(targetDescription);
+        TaskResult result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(TaskStatus.COMPLETED, result.getStatus());
+        assertFalse(((Boolean) result.getData().get("fromCache")));
+        
+        // 验证交互
+        verify(aiModelService).cacheResult(any(AITapRequest.class), any(AITapResult.class));
+    }
+
+    @Test
+    void testAiTap_noElementsFound() throws Exception {
+        // 准备测试数据
+        String targetDescription = "不存在的按钮";
+        AITapRequest request = AITapRequest.builder()
+                .task(targetDescription)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(null);
+        when(insightEngine.findElementsByDescription(eq(uiContext), eq(targetDescription)))
+                .thenReturn(CompletableFuture.completedFuture(Collections.emptyList()));
+        
+        // 执行测试
+        CompletableFuture<TaskResult> resultFuture = agent.aiTap(targetDescription);
+        TaskResult result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(TaskStatus.FAILED, result.getStatus());
+        assertTrue(result.getMessage().contains("No elements found"));
+    }
+
+    @Test
+    void testAiInput_withCacheHit() throws Exception {
+        // 准备测试数据
+        String targetDescription = "用户名输入框";
+        String text = "testuser";
+        AIInputRequest request = AIInputRequest.builder()
+                .task(targetDescription)
+                .inputText(text)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        AIInputResult cachedResult = AIInputResult.builder()
+                .inputTarget(uiElement)
+                .build();
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(cachedResult);
+        
+        TaskResult expectedResult = TaskResult.builder()
+                .status(TaskStatus.COMPLETED)
+                .message("Input completed successfully")
+                .build();
+        when(taskExecutor.executeTask(eq("input"), anyMap())).thenReturn(CompletableFuture.completedFuture(expectedResult));
+        
+        // 执行测试
+        CompletableFuture<TaskResult> resultFuture = agent.aiInput(targetDescription, text);
+        TaskResult result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(TaskStatus.COMPLETED, result.getStatus());
+        assertTrue(result.getMessage().contains("from cache"));
+    }
+
+    @Test
+    void testAiInput_withCacheMiss() throws Exception {
+        // 准备测试数据
+        String targetDescription = "密码输入框";
+        String text = "password123";
+        AIInputRequest request = AIInputRequest.builder()
+                .task(targetDescription)
+                .inputText(text)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        List<UiElement> elements = Collections.singletonList(uiElement);
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(null);
+        when(insightEngine.findElementsByDescription(eq(uiContext), eq(targetDescription)))
+                .thenReturn(CompletableFuture.completedFuture(elements));
+        
+        TaskResult expectedResult = TaskResult.builder()
+                .status(TaskStatus.COMPLETED)
+                .message("Input completed successfully")
+                .build();
+        when(taskExecutor.executeTask(eq("input"), anyMap())).thenReturn(CompletableFuture.completedFuture(expectedResult));
+        
+        // 执行测试
+        CompletableFuture<TaskResult> resultFuture = agent.aiInput(targetDescription, text);
+        TaskResult result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals(TaskStatus.COMPLETED, result.getStatus());
+        assertFalse(((Boolean) result.getData().get("fromCache")));
+        
+        // 验证交互
+        verify(aiModelService).cacheResult(any(AIInputRequest.class), any(AIInputResult.class));
+    }
+
+    @Test
+    void testExtractData_withCacheHit() throws Exception {
+        // 准备测试数据
+        String targetDescription = "产品价格";
+        ExtractDataRequest request = ExtractDataRequest.builder()
+                .task(targetDescription)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        ExtractDataResult cachedResult = ExtractDataResult.builder()
+                .data("$99.99")
+                .build();
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(cachedResult);
+        
+        // 执行测试
+        CompletableFuture<String> resultFuture = agent.extractData(targetDescription);
+        String result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertEquals("$99.99", result);
+    }
+
+    @Test
+    void testExtractData_withCacheMiss() throws Exception {
+        // 准备测试数据
+        String targetDescription = "产品名称";
+        ExtractDataRequest request = ExtractDataRequest.builder()
+                .task(targetDescription)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        List<UiElement> elements = Collections.singletonList(uiElement);
+        
+        // 设置模拟行为
+        when(aiModelService.getCachedResult(request)).thenReturn(null);
+        when(insightEngine.findElementsByDescription(eq(uiContext), eq(targetDescription)))
+                .thenReturn(CompletableFuture.completedFuture(elements));
+        
+        // 执行测试
+        CompletableFuture<String> resultFuture = agent.extractData(targetDescription);
+        String result = resultFuture.get(5, TimeUnit.SECONDS);
+        
+        // 验证结果
+        assertNotNull(result);
+        assertTrue(result.contains("Element ID: test-element-id"));
+        assertTrue(result.contains("Type: BUTTON"));
+        assertTrue(result.contains("Text: Test Button"));
+        
+        // 验证交互
+        verify(aiModelService).cacheResult(any(ExtractDataRequest.class), any(ExtractDataResult.class));
+    }
+
+    @Test
+    void testCancelAllTasks() throws Exception {
+        // 首先创建一些活跃任务
+        String instruction1 = "任务1";
+        String instruction2 = "任务2";
+        
+        // 设置模拟行为使任务不立即完成
+        AIActionRequest request = AIActionRequest.builder()
+                .task(instruction1)
+                .uiContext(uiContext)
+                .agentType("WEB")
+                .build();
+        
+        when(aiModelService.getCachedResult(request)).thenReturn(null);
+        when(insightEngine.understandIntent(anyString(), anyMap()))
+                .thenReturn(CompletableFuture.supplyAsync(() -> {
+                    try { Thread.sleep(10000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                    return new HashMap<String, Object>();
+                }));
+        
+        // 执行两个异步任务
+        agent.aiAction(instruction1);
+        agent.aiAction(instruction2);
+        
+        // 验证有活跃任务
+        assertTrue(agent.getActiveTaskCount() > 0);
+        
+        // 取消所有任务
+        agent.cancelAllTasks();
+        
+        // 验证没有活跃任务
+        assertEquals(0, agent.getActiveTaskCount());
+    }
+}

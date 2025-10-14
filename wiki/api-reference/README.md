@@ -9,6 +9,7 @@ Midscene Java 提供了丰富的 API 接口，支持各种自动化操作场景�
 - [Android 平台 API](android平台-api.md)
 - [AI 模型 API](ai模型-api.md)
 - [配置 API](配置-api.md)
+- [Playground API](playground-api.md)
 
 ## 🏗️ 核心模块
 

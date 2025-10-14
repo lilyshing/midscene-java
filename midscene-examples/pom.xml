@@ -15,27 +15,6 @@
     <description>Example applications demonstrating Midscene framework usage</description>
 
     <dependencies>
-        <!-- Core module dependency -->
-        <dependency>
-            <groupId>com.midscene</groupId>
-            <artifactId>midscene-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Web module dependency -->
-        <dependency>
-            <groupId>com.midscene</groupId>
-            <artifactId>midscene-web</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- Android module dependency -->
-        <dependency>
-            <groupId>com.midscene</groupId>
-            <artifactId>midscene-android</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- Playwright Java -->
         <dependency>
             <groupId>com.microsoft.playwright</groupId>

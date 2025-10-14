@@ -1,13 +1,14 @@
 # Midscene Java 示例
 
-本目录包含了使用 Midscene Java 框架进行自动化操作的示例代码。这些示例展示了如何使用 AI 驱动的方法进行 Web 和 Android 自动化。
+本目录包含了使用 Midscene Java 框架进行自动化操作的示例代码。这些示例展示了如何使用 AI 驱动的方法进行 Web、Android 和 iOS 自动化。
 
 ## 示例列表
 
 1. **BasicWebAutomationExample** - 基本的 Web 自动化示例
 2. **AdvancedWebAutomationExample** - 高级的 Web 自动化示例
 3. **AndroidAutomationExample** - Android 设备自动化示例
-4. **CombinedAutomationExample** - 综合自动化示例，同时使用 Web 和 Android
+4. **IOSAutomationExample** - iOS 设备自动化示例
+5. **CombinedAutomationExample** - 综合自动化示例，同时使用 Web、Android 和 iOS
 
 ## 前置条件
 
@@ -17,6 +18,10 @@
 4. 对于 Android 自动化示例，需要：
    - Android SDK
    - 启用了开发者选项和 USB 调试的 Android 设备或模拟器
+5. 对于 iOS 自动化示例，需要：
+   - Xcode（在 macOS 上）
+   - 安装了 Apple Configurator 2
+   - 已配置开发者账户的 iOS 设备
 
 ## 构建和运行
 
@@ -52,6 +57,12 @@ java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.e
 java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.examples.AndroidAutomationExample
 ```
 
+#### iOS自动化示例
+
+```bash
+java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.examples.IOSAutomationExample
+```
+
 #### 综合自动化示例
 
 ```bash
@@ -84,19 +95,30 @@ java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.e
 3. 执行 AI 驱动的设备操作（点击、滑动、提取信息）
 4. 清理资源
 
+### IOSAutomationExample
+
+这个示例展示了 iOS 设备自动化：
+1. 连接到 iOS 设备
+2. 初始化 iOS 平台接口
+3. 执行 AI 驱动的设备操作（点击、滑动、提取信息）
+4. 监控设备状态并获取截图
+5. 清理资源
+
 ### CombinedAutomationExample
 
-这个示例展示了如何在一个应用中同时使用 Web 和 Android 自动化：
-1. 同时初始化 Web 和 Android 自动化环境
+这个示例展示了如何在一个应用中同时使用 Web、Android 和 iOS 自动化：
+1. 同时初始化 Web、Android 和 iOS 自动化环境
 2. 在不同平台上执行操作
 3. 实现跨平台协调操作
+4. 管理多平台资源和状态
 
 ## 注意事项
 
 1. 首次运行时，Playwright 会自动下载必要的浏览器二进制文件
 2. Android 自动化需要正确配置 ADB 和设备连接
-3. 示例中的 AI 操作可能需要一些时间来完成，具体取决于网络环境和模型响应速度
-4. 如果遇到超时问题，可以调整 AgentOptions 中的超时设置
+3. iOS 自动化需要正确配置 Xcode 和设备权限
+4. 示例中的 AI 操作可能需要一些时间来完成，具体取决于网络环境和模型响应速度
+5. 如果遇到超时问题，可以调整 AgentOptions 中的超时设置
 
 ## 故障排除
 

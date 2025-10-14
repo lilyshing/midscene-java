@@ -14,18 +14,27 @@
     <url>https://github.com/Python51888/midscene-python</url>
 
     <modules>
-        <module>midscene-core</module>
-        <module>midscene-web</module>
-        <module>midscene-android</module>
+        <module>packages/core</module>
+        <module>packages/shared</module>
+        <module>packages/android</module>
+        <module>packages/ios</module>
+        <module>packages/android-playground</module>
+        <module>packages/ios-playground</module>
         <module>midscene-examples</module>
-        <module>midscene-cli</module>
         <module>midscene-tests</module>
+        <module>apps/playground</module>
+        <module>apps/android-playground</module>
+        <module>apps/report</module>
+        <module>apps/recorder-form</module>
+        <module>apps/chrome-extension</module>
+        <module>apps/site</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
         <jackson.version>2.15.2</jackson.version>
         <slf4j.version>2.0.9</slf4j.version>
         <logback.version>1.4.11</logback.version>
@@ -136,6 +145,7 @@
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
+                        <release>17</release>
                     </configuration>
                 </plugin>
                 <plugin>
