@@ -1,143 +1,120 @@
-# Midscene Java 示例
+# Midscene Java 示例代码
 
-本目录包含了使用 Midscene Java 框架进行自动化操作的示例代码。这些示例展示了如何使用 AI 驱动的方法进行 Web、Android 和 iOS 自动化。
+本目录包含了 Midscene Java 框架的各种使用示例，展示了 AI 驱动的 UI 自动化测试的强大功能。
 
-## 示例列表
+## 示例结构
 
-1. **BasicWebAutomationExample** - 基本的 Web 自动化示例
-2. **AdvancedWebAutomationExample** - 高级的 Web 自动化示例
-3. **AndroidAutomationExample** - Android 设备自动化示例
-4. **IOSAutomationExample** - iOS 设备自动化示例
-5. **CombinedAutomationExample** - 综合自动化示例，同时使用 Web、Android 和 iOS
+示例代码按照功能模块组织，每个模块演示了 Midscene 的不同特性：
 
-## 前置条件
+- **基础示例**：展示 Midscene 的核心功能和基本使用方法
+- **Web自动化示例**：演示浏览器自动化操作
+- **数据提取示例**：展示智能数据提取功能
+- **断言验证示例**：演示 AI 驱动的断言验证
+- **复杂Web交互示例**：展示如何处理复杂的 Web 交互场景
 
-1. Java 17 或更高版本
-2. Maven 3.6 或更高版本
-3. 对于 Web 自动化示例，需要安装 Chromium 浏览器
-4. 对于 Android 自动化示例，需要：
-   - Android SDK
-   - 启用了开发者选项和 USB 调试的 Android 设备或模拟器
-5. 对于 iOS 自动化示例，需要：
-   - Xcode（在 macOS 上）
-   - 安装了 Apple Configurator 2
-   - 已配置开发者账户的 iOS 设备
+## 快速开始
 
-## 构建和运行
+### 前提条件
 
-### 构建项目
-
-```bash
-mvn clean compile
-```
-
-### 打包项目
-
-```bash
-mvn package
-```
+- JDK 11 或更高版本
+- Maven 3.6 或更高版本
+- 有效的 AI 模型 API 密钥（如 OpenAI GPT-4 API Key）
 
 ### 运行示例
 
-#### 基本Web自动化示例
+1. 确保已安装所有必要的依赖
 
 ```bash
-java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.examples.BasicWebAutomationExample
+mvn clean install
 ```
 
-#### 高级Web自动化示例
+2. 运行特定示例
 
 ```bash
-java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.examples.AdvancedWebAutomationExample
+# 运行基础示例
+mvn exec:java -Dexec.mainClass="com.midscene.examples.basic.BasicExample"
+
+# 运行Web自动化示例
+mvn exec:java -Dexec.mainClass="com.midscene.examples.web.WebAutomationExample"
+
+# 运行数据提取示例
+mvn exec:java -Dexec.mainClass="com.midscene.examples.data.DataExtractionExample"
+
+# 运行断言验证示例
+mvn exec:java -Dexec.mainClass="com.midscene.examples.assertion.AssertionExample"
+
+# 运行复杂Web交互示例
+mvn exec:java -Dexec.mainClass="com.midscene.examples.complex.ComplexWebInteractionExample"
 ```
 
-#### Android自动化示例
+## 配置说明
 
-```bash
-java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.examples.AndroidAutomationExample
-```
+示例代码中包含了配置示例，实际使用时需要替换为您自己的配置：
 
-#### iOS自动化示例
+1. **AI模型配置**：
+   - 在实际使用前，需要配置有效的 AI 模型 API 密钥
+   - 支持多种 AI 模型，如 OpenAI GPT-4、开源模型等
 
-```bash
-java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.examples.IOSAutomationExample
-```
-
-#### 综合自动化示例
-
-```bash
-java -cp target/midscene-examples-0.1.1-jar-with-dependencies.jar com.midscene.examples.CombinedAutomationExample
-```
+2. **浏览器配置**：
+   - 可以配置不同的浏览器（Chrome、Firefox、Edge等）
+   - 支持配置浏览器参数、超时设置等
 
 ## 示例说明
 
-### BasicWebAutomationExample
+### 1. 基础示例 (BasicExample)
 
-这个示例展示了最基本的 Web 自动化流程：
-1. 初始化 Playwright 页面
-2. 导航到指定网站
-3. 创建 Agent 实例
-4. 执行简单的 AI 驱动操作（如点击链接）
-5. 清理资源
+演示 Midscene 的三个核心功能：
+- 自然语言交互：通过自然语言指令控制界面
+- 数据提取：从页面中智能提取结构化数据
+- 断言验证：验证页面状态是否符合预期
 
-### AdvancedWebAutomationExample
+### 2. Web自动化示例 (WebAutomationExample)
 
-这个示例展示了更高级的 Web 自动化功能：
-1. 使用 AgentOptions 配置高级选项（超时、重试、缓存等）
-2. 执行复杂的 AI 驱动操作（搜索、提取信息、验证页面状态）
-3. 使用页面状态冻结功能进行批量操作
+演示浏览器自动化的常见操作：
+- 页面导航
+- 表单交互
+- 复杂交互场景
+- 多页面操作
 
-### AndroidAutomationExample
+### 3. 数据提取示例 (DataExtractionExample)
 
-这个示例展示了 Android 设备自动化：
-1. 连接到 Android 设备
-2. 启动应用程序
-3. 执行 AI 驱动的设备操作（点击、滑动、提取信息）
-4. 清理资源
+展示 Midscene 强大的数据提取能力：
+- 基本数据提取（标题、文本内容等）
+- 结构化数据提取（表格、列表等）
+- 复杂数据结构提取
+- 实时数据监控
 
-### IOSAutomationExample
+### 4. 断言验证示例 (AssertionExample)
 
-这个示例展示了 iOS 设备自动化：
-1. 连接到 iOS 设备
-2. 初始化 iOS 平台接口
-3. 执行 AI 驱动的设备操作（点击、滑动、提取信息）
-4. 监控设备状态并获取截图
-5. 清理资源
+演示 AI 驱动的断言验证功能：
+- 基本断言（元素存在、文本内容等）
+- 复杂断言（业务规则验证）
+- 条件断言
+- 视觉断言（UI布局、样式验证）
 
-### CombinedAutomationExample
+### 5. 复杂Web交互示例 (ComplexWebInteractionExample)
 
-这个示例展示了如何在一个应用中同时使用 Web、Android 和 iOS 自动化：
-1. 同时初始化 Web、Android 和 iOS 自动化环境
-2. 在不同平台上执行操作
-3. 实现跨平台协调操作
-4. 管理多平台资源和状态
+展示如何处理复杂的 Web 交互场景：
+- 多步骤表单处理
+- 动态内容交互
+- 模态框和弹窗处理
+- 拖拽和拖放操作
+- 文件上传和下载
+- 完整业务流程自动化
 
 ## 注意事项
 
-1. 首次运行时，Playwright 会自动下载必要的浏览器二进制文件
-2. Android 自动化需要正确配置 ADB 和设备连接
-3. iOS 自动化需要正确配置 Xcode 和设备权限
-4. 示例中的 AI 操作可能需要一些时间来完成，具体取决于网络环境和模型响应速度
-5. 如果遇到超时问题，可以调整 AgentOptions 中的超时设置
+1. **API 密钥安全**：请确保不要将您的 API 密钥提交到版本控制系统中
+2. **网络连接**：示例运行需要稳定的网络连接以访问 AI 模型服务
+3. **浏览器驱动**：确保已安装正确版本的浏览器驱动
+4. **性能考虑**：AI 模型推理可能需要一定时间，请耐心等待
 
-## 故障排除
+## 更多资源
 
-### Playwright 相关问题
+- [官方文档](https://midscenejs.com/)
+- [API 参考](https://midscenejs.com/api.html)
+- [Wiki 文档](../wiki/README.md)
 
-如果遇到 Playwright 相关问题，可以尝试：
+## 贡献指南
 
-```bash
-mvn exec:java -Dexec.mainClass="com.microsoft.playwright.Install"
-```
-
-### Android 连接问题
-
-如果遇到 Android 连接问题，请检查：
-
-1. 设备是否已启用 USB 调试
-2. 是否已通过 `adb devices` 命令看到设备
-3. 是否已授予设备调试授权
-
-## 更多信息
-
-更多关于 Midscene Java 框架的信息，请参考项目文档。
+欢迎提交改进建议或新的示例代码。请遵循项目的贡献指南。

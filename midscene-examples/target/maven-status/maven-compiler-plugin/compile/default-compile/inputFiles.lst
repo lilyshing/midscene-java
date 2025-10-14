@@ -1,11 +1,5 @@
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\ChromeTestExample.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\AgentPlaywrightExample.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\BasicWebAutomationExample.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\CombinedAutomationExample.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\IOSAutomationExample.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\AndroidDevice.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\AndroidPlatformInterface.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\PlaywrightPlatformInterface.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\AdvancedWebAutomationExample.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\AndroidAutomationExample.java
-D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\WebAutomationExample.java
+D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\assertion\AssertionExample.java
+D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\basic\BasicExample.java
+D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\data\DataExtractionExample.java
+D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\web\WebAutomationExample.java
+D:\project\midscene-java\midscene-examples\src\main\java\com\midscene\examples\complex\ComplexExample.java
