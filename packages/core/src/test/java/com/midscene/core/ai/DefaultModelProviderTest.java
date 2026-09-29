@@ -1,9 +1,9 @@
 package com.midscene.core.ai;
 
 import com.midscene.core.exception.MidsceneException;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class DefaultModelProviderTest {
 
     private DefaultModelProvider modelProvider;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Initialize with mock configuration
         Map<String, Object> config = new HashMap<>();

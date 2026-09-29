@@ -1,13 +1,13 @@
 package com.midscene.core.cache;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UiContextCacheTest {
 
@@ -16,7 +16,7 @@ public class UiContextCacheTest {
     private static final long LONG_LEVEL2_EXPIRY = 100; // 100毫秒二级缓存过期时间
     private static final String CUSTOM_CACHE_KEY = "custom_ui_context_key";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // 使用较短的过期时间以便于测试
         cache = new UiContextCache(SHORT_LEVEL1_EXPIRY, LONG_LEVEL2_EXPIRY);

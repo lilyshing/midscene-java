@@ -1,8 +1,8 @@
 package com.midscene.core.cache;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,7 +16,7 @@ public class AIModelCacheTest {
     private static final long TEST_EXPIRY_MS = 100;
     private static final int TEST_MAX_SIZE = 5;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cache = new AIModelCache(TEST_EXPIRY_MS, TEST_MAX_SIZE);
     }
